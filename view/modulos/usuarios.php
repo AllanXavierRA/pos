@@ -21,13 +21,13 @@
 
         </div>
         <div class="box-body">
-          <table class="table table-bordered table-striped dt-responsive tablas">
+          <table class="table table-bordered table-striped dt-responsive tablas" width="100%">
 
             <thead>
 
               <tr>
 
-                <th style= "width: 10px">#</th>
+                <th style= "width: 10px">ID</th>
                 <th>Nombre</th>
                 <th>Usuario</th>
                 <th>Foto</th>
@@ -59,15 +59,28 @@
                       echo $img = ($value["foto"] != "") ? '<td><img src="'.$value["foto"].'" class="img-tumbnail" width="40px"></td>' : '<td><img src="view/img/usuarios/default/anonymous.png" class="img-tumbnail" width="40px"></td>';
 
                       
-                      echo '<td>'.$value["perfil"].'</td>
-                      <td><button class="btn btn-success btn-xs">Activado</button></td>
-                      <td>'.$value["ultimo_login"].'</td>
+                      echo '<td>'.$value["perfil"].'</td>';
+
+
+                      if($value["estado"] != 0){
+
+                        echo '<td><button class="btn btn-success btn-xs btnActivar" idUsuario="'.$value["id"].'" estadoUsuario="0">Activado</button></td>';
+
+                      }else{
+
+                        echo '<td><button class="btn btn-danger btn-xs btnActivar" idUsuario="'.$value["id"].'" estadoUsuario="1">Desactivado</button></td>';
+
+                      }
+                      
+                      
+                      echo '<td>'.$value["ultimo_login"].'</td>
                       <td>
 
                         <div class="btn-gruop">
 
                           <button class="btn btn-warning btnEditarUsuario" idUsuario="'.$value["id"].'" data-toggle="modal" data-target="#modalEditarUsuario"><i class="fa fa-pencil"></i></button>
-                          <button class="btn btn-danger"><i class="fa fa-times"></i></button>
+
+                          <button class="btn btn-danger btnEliminarUsuario" idUsuario="'.$value["id"].'" fotoUsuario="'.$value["foto"].'" usuario="'.$value["usuario"].'"><i class="fa fa-times"></i></button>
 
                         </div>
 
@@ -141,7 +154,7 @@
                 <i class="fa fa-key"></i>
               </span>
 
-              <input type="text" class="form-control input-lg" name="nuevoUsuario" placeholder="Ingresar Usuario" required>
+              <input type="text" class="form-control input-lg" name="nuevoUsuario" placeholder="Ingresar Usuario" id="nuevoUsuario" required>
 
             </div>
             
@@ -306,7 +319,7 @@
             
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="gruopFoto">
             
             <div class="panel">SUBIR FOTO</div>
 
@@ -344,5 +357,12 @@
     </div>
 
   </div>
-</div
+</div>
+
+<?php
+
+  $borrarUsuario = new ControladorUsuarios();
+  $borrarUsuario -> ctrBorrarUsuario();
+
+?> 
 

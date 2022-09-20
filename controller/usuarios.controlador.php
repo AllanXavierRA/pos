@@ -24,16 +24,48 @@ class ControladorUsuarios{
 
                 
                     if($respuesta["usuario"] == $_POST["ingUsuario"] && $respuesta["password"] == $encriptar){
-                        $_SESSION["iniciarSesion"] = "ok";
-                        $_SESSION["id"] = $respuesta["id"];
-                        $_SESSION["nombre"] = $respuesta["nombre"];
-                        $_SESSION["usuario"] = $respuesta["usuario"];
-                        $_SESSION["foto"] = $respuesta["foto"];
-                        $_SESSION["perfil"] = $respuesta["perfil"];
 
-                        echo '<script>
-                            window.location = "inicio"; 
-                        </script>';
+                        if($respuesta["estado"] == 1){
+
+                            $_SESSION["iniciarSesion"] = "ok";
+                            $_SESSION["id"] = $respuesta["id"];
+                            $_SESSION["nombre"] = $respuesta["nombre"];
+                            $_SESSION["usuario"] = $respuesta["usuario"];
+                            $_SESSION["foto"] = $respuesta["foto"];
+                            $_SESSION["perfil"] = $respuesta["perfil"];
+
+                            /*--============
+                            Registro del ultimo login
+                            ============*/
+
+                            date_default_timezone_set('America/Guayaquil');
+
+                            $fecha = date('Y-m-d');
+                            $hora = date('H:i:s');
+
+                            $fechaActual = $fecha.' '.$hora;
+
+                            $item1 = "ultimo_login";
+                            $valor1 = $fechaActual;
+
+                            $item2 = "id";
+                            $valor2 = $respuesta["id"];
+
+                            $ultimoLogin = ModeloUsuarios::mdlActualizarUsuario($tabla, $item1, $valor1, $item2, $valor2);
+
+    
+                            if($ultimoLogin){
+
+                                echo '<script>
+                                    window.location = "inicio"; 
+                                </script>';
+                                
+                            }
+
+                        }else{
+
+                            echo '<br><div class="alert alert-danger">El usuario no está activado</div>';
+                        }
                     }else{
                         echo '<div class="alert alert-danger">Error al ingresar, vuelve a intentarlo</div>';
                     }
@@ -178,7 +210,7 @@ class ControladorUsuarios{
 
                 $ruta = $_POST["fotoActual"];
 
-                if(isset($_FILES["editarFoto"]["tmp_name"])){
+                if(isset($_FILES["editarFoto"]["tmp_name"]) && !empty($_FILES["editarFoto"]["tmp_name"])){
 
                         list($ancho, $alto) = getimagesize($_FILES["editarFoto"]["tmp_name"]);
 
@@ -314,4 +346,48 @@ class ControladorUsuarios{
             }
         }
     }
+
+    /*--============
+    Borrar Usuario
+    ============*/
+    static public function ctrBorrarUsuario(){
+
+		if(isset($_GET["idUsuario"])){
+
+			$tabla ="usuarios";
+			$datos = $_GET["idUsuario"];
+
+			if($_GET["fotoUsuario"] != ""){
+
+				unlink($_GET["fotoUsuario"]);
+				rmdir('vistas/img/usuarios/'.$_GET["usuario"]);
+
+			}
+
+			$respuesta = ModeloUsuarios::mdlBorrarUsuario($tabla, $datos);
+
+			if($respuesta == "ok"){
+
+				echo'<script>
+
+				swal({
+					  type: "success",
+					  title: "El usuario ha sido borrado correctamente",
+					  showConfirmButton: true,
+					  confirmButtonText: "Cerrar"
+					  }).then(function(result){
+								if (result.value) {
+
+								window.location = "usuarios";
+
+								}
+							})
+
+				</script>';
+
+			}		
+
+		}
+
+	}
 }
