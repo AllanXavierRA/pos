@@ -39,7 +39,7 @@
                         if($_SESSION["foto"] != ""){
                             echo '<img src="'.$_SESSION["foto"].'" class="user-image">';
                         }else{
-                            echo '<img src="vistas/img/usuarios/default/anonymous.png" class="user-image">';
+                            echo '<img src="view/img/usuarios/default/anonymous.png" class="user-image">';
                         }
 
                     ?>

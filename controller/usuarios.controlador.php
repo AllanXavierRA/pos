@@ -360,7 +360,7 @@ class ControladorUsuarios{
 			if($_GET["fotoUsuario"] != ""){
 
 				unlink($_GET["fotoUsuario"]);
-				rmdir('vistas/img/usuarios/'.$_GET["usuario"]);
+				rmdir('view/img/usuarios/'.$_GET["usuario"]);
 
 			}
 
