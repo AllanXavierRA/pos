@@ -4,7 +4,7 @@
     
     <h1>
       
-      Crear venta
+      Editar venta
     
     </h1>
 
@@ -22,6 +22,10 @@
 
     <div class="row">
 
+      <!--=====================================
+      EL FORMULARIO
+      ======================================-->
+      
       <div class="col-lg-5 col-xs-12">
         
         <div class="box box-success">
@@ -33,6 +37,33 @@
             <div class="box-body">
   
               <div class="box">
+
+                <?php
+
+                    $item = "id";
+                    $valor = $_GET["idVenta"];
+
+                    $venta = ControladorVentas::ctrMostrarVentas($item, $valor);
+
+
+                    $itemUsuario = "id";
+                    $valorUsuario = $venta["id_vendedor"];
+
+                    $vendedor = ControladorUsuarios::ctrMostrarUsuarios($itemUsuario, $valorUsuario);
+
+                    $itemCliente = "id";
+                    $valorCliente = $venta["id_cliente"];
+
+                    $cliente = ControladorClientes::ctrMostrarClientes($itemCliente, $valorCliente);
+
+                    $porcentajeImpuesto = $venta["impuesto"] * 100 / $venta["neto"];
+
+
+                ?>
+
+                <!--=====================================
+                ENTRADA DEL VENDEDOR
+                ======================================-->
             
                 <div class="form-group">
                 
@@ -40,14 +71,17 @@
                     
                     <span class="input-group-addon"><i class="fa fa-user"></i></span> 
 
-                    <input type="text" class="form-control" id="nuevoVendedor" value="<?php echo $_SESSION["nombre"];?>" readonly>
+                    <input type="text" class="form-control" id="nuevoVendedor" value="<?php echo $vendedor["nombre"]; ?>" readonly>
 
-                    <input type="hidden" name="idVendedor" value="<?php echo $_SESSION["id"];?>">
+                    <input type="hidden" name="idVendedor" value="<?php echo $vendedor["id"]; ?>">
 
                   </div>
 
                 </div> 
 
+                <!--=====================================
+                ENTRADA DEL CÓDIGO
+                ======================================--> 
 
                 <div class="form-group">
                   
@@ -55,37 +89,15 @@
                     
                     <span class="input-group-addon"><i class="fa fa-key"></i></span>
 
-                    <?php
-
-                    $item = null;
-                    $valor = null;
-                    
-                    $ventas = ControladorVentas::ctrMostrarVentas($item, $valor);
-
-                    if(!$ventas){
-
-                      echo '<input type="text" class="form-control" id="nuevaVenta" name="nuevaVenta" value="10001" readonly>';
-
-                    }else{
-
-                      foreach($ventas as $key => $value){
-
-                      }
-
-                      $codigo = $value["codigo"] +1;
-
-                    echo '<input type="text" class="form-control" id="nuevaVenta" name="nuevaVenta" value="'.$codigo.'" readonly>';
-
-
-                    }
-
-                    ?>
-                    
-                  
+                   <input type="text" class="form-control" id="nuevaVenta" name="editarVenta" value="<?php echo $venta["codigo"]; ?>" readonly>
+               
                   </div>
                 
                 </div>
 
+                <!--=====================================
+                ENTRADA DEL CLIENTE
+                ======================================--> 
 
                 <div class="form-group">
                   
@@ -95,19 +107,21 @@
                     
                     <select class="form-control" id="seleccionarCliente" name="seleccionarCliente" required>
 
-                    <option value="">Seleccionar cliente</option>
+                    <option value="<?php echo $cliente["id"]; ?>"><?php echo $cliente["nombre"]; ?></option>
 
                     <?php
-                    
+
                       $item = null;
                       $valor = null;
 
                       $categorias = ControladorClientes::ctrMostrarClientes($item, $valor);
 
-                      foreach ($categorias as $key => $value) {
-                        echo '<option value="'.$value["id"].'">'.$value["nombre"].'</option>';
-                      }
-                    
+                       foreach ($categorias as $key => $value) {
+
+                         echo '<option value="'.$value["id"].'">'.$value["nombre"].'</option>';
+
+                       }
+
                     ?>
 
                     </select>
@@ -118,11 +132,71 @@
                 
                 </div>
 
+                <!--=====================================
+                ENTRADA PARA AGREGAR PRODUCTO
+                ======================================--> 
+
                 <div class="form-group row nuevoProducto">
+
+                <?php
+
+                $listaProducto = json_decode($venta["productos"], true);
+
+                foreach ($listaProducto as $key => $value) {
+
+                  $item = "id";
+                  $valor = $value["id"];
+                  $orden = "id";
+
+                  $respuesta = ControladorProductos::ctrMostrarProductos($item, $valor, $orden);
+
+                  $stockAntiguo = $respuesta["stock"] + $value["cantidad"];
+                  
+                  echo '<div class="row" style="padding:5px 15px">
+            
+                        <div class="col-xs-6" style="padding-right:0px">
+            
+                          <div class="input-group">
+                
+                            <span class="input-group-addon"><button type="button" class="btn btn-danger btn-xs quitarProducto" idProducto="'.$value["id"].'"><i class="fa fa-times"></i></button></span>
+
+                            <input type="text" class="form-control nuevaDescripcionProducto" idProducto="'.$value["id"].'" name="agregarProducto" value="'.$value["descripcion"].'" readonly required>
+
+                          </div>
+
+                        </div>
+
+                        <div class="col-xs-3">
+              
+                          <input type="number" class="form-control nuevaCantidadProducto" name="nuevaCantidadProducto" min="1" value="'.$value["cantidad"].'" stock="'.$stockAntiguo.'" nuevoStock="'.$value["stock"].'" required>
+
+                        </div>
+
+                        <div class="col-xs-3 ingresoPrecio" style="padding-left:0px">
+
+                          <div class="input-group">
+
+                            <span class="input-group-addon"><i class="ion ion-social-usd"></i></span>
+                   
+                            <input type="text" class="form-control nuevoPrecioProducto" precioReal="'.$respuesta["precio_venta"].'" name="nuevoPrecioProducto" value="'.$value["total"].'" readonly required>
+   
+                          </div>
+               
+                        </div>
+
+                      </div>';
+                }
+
+
+                ?>
 
                 </div>
 
                 <input type="hidden" id="listaProductos" name="listaProductos">
+
+                <!--=====================================
+                BOTÓN PARA AGREGAR PRODUCTO
+                ======================================-->
 
                 <button type="button" class="btn btn-default hidden-lg btnAgregarProducto">Agregar producto</button>
 
@@ -130,6 +204,10 @@
 
                 <div class="row">
 
+                  <!--=====================================
+                  ENTRADA IMPUESTOS Y TOTAL
+                  ======================================-->
+                  
                   <div class="col-xs-8 pull-right">
                     
                     <table class="table">
@@ -151,10 +229,11 @@
                             
                             <div class="input-group">
                            
-                              <input type="number" class="form-control" min="0" id="nuevoImpuestoVenta" name="nuevoImpuestoVenta" placeholder="0" required>
-                              
-                              <input type="hidden" name="nuevoPrecioImpuesto" id="nuevoPrecioImpuesto" required>
-                              <input type="hidden" name="nuevoPrecioNeto" id="nuevoPrecioNeto" required>
+                              <input type="number" class="form-control input-lg" min="0" id="nuevoImpuestoVenta" name="nuevoImpuestoVenta" value="<?php echo $porcentajeImpuesto; ?>" required>
+
+                               <input type="hidden" name="nuevoPrecioImpuesto" id="nuevoPrecioImpuesto" value="<?php echo $venta["impuesto"]; ?>" required>
+
+                               <input type="hidden" name="nuevoPrecioNeto" id="nuevoPrecioNeto" value="<?php echo $venta["neto"]; ?>" required>
 
                               <span class="input-group-addon"><i class="fa fa-percent"></i></span>
                         
@@ -168,9 +247,10 @@
                            
                               <span class="input-group-addon"><i class="ion ion-social-usd"></i></span>
 
-                              <input type="number" min="1" class="form-control" id="nuevoTotalVenta" name="nuevoTotalVenta" total="" placeholder="00000" readonly required>
+                              <input type="text" class="form-control input-lg" id="nuevoTotalVenta" name="nuevoTotalVenta" total="<?php echo $venta["neto"]; ?>"  value="<?php echo $venta["total"]; ?>" readonly required>
+
+                              <input type="hidden" name="totalVenta" value="<?php echo $venta["total"]; ?>" id="totalVenta">
                               
-                              <input type="hidden" name="totalVenta" id="totalVenta">
                         
                             </div>
 
@@ -187,6 +267,10 @@
                 </div>
 
                 <hr>
+
+                <!--=====================================
+                ENTRADA MÉTODO DE PAGO
+                ======================================-->
 
                 <div class="form-group row">
                   
@@ -209,18 +293,6 @@
 
                   <input type="hidden" id="listaMetodoPago" name="listaMetodoPago">
 
-                  <!-- <div class="col-xs-6" style="padding-left:0px">
-                        
-                    <div class="input-group">
-                         
-                      <input type="text" class="form-control" id="nuevoCodigoTransaccion" name="nuevoCodigoTransaccion" placeholder="Código transacción"  required>
-                           
-                      <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                      
-                    </div>
-
-                  </div> -->
-
                 </div>
 
                 <br>
@@ -231,23 +303,26 @@
 
           <div class="box-footer">
 
-            <button type="submit" class="btn btn-primary pull-right">Guardar venta</button>
+            <button type="submit" class="btn btn-primary pull-right">Guardar cambios</button>
 
           </div>
 
         </form>
 
         <?php
-        
-        $guardarVenta = new ControladorVentas();
-        $guardarVenta -> ctrCrearVenta();
 
+          $editarVenta = new ControladorVentas();
+          $editarVenta -> ctrEditarVenta();
+          
         ?>
 
         </div>
             
       </div>
 
+      <!--=====================================
+      LA TABLA DE PRODUCTOS
+      ======================================-->
 
       <div class="col-lg-7 hidden-md hidden-sm hidden-xs">
         
@@ -287,7 +362,9 @@
 
 </div>
 
-
+<!--=====================================
+MODAL AGREGAR CLIENTE
+======================================-->
 
 <div id="modalAgregarCliente" class="modal fade" role="dialog">
   
@@ -297,6 +374,10 @@
 
       <form role="form" method="post">
 
+        <!--=====================================
+        CABEZA DEL MODAL
+        ======================================-->
+
         <div class="modal-header" style="background:#3c8dbc; color:white">
 
           <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -305,12 +386,15 @@
 
         </div>
 
-
+        <!--=====================================
+        CUERPO DEL MODAL
+        ======================================-->
 
         <div class="modal-body">
 
           <div class="box-body">
 
+            <!-- ENTRADA PARA EL NOMBRE -->
             
             <div class="form-group">
               
@@ -324,7 +408,7 @@
 
             </div>
 
-
+            <!-- ENTRADA PARA EL DOCUMENTO ID -->
             
             <div class="form-group">
               
@@ -332,13 +416,13 @@
               
                 <span class="input-group-addon"><i class="fa fa-key"></i></span> 
 
-                <input type="number" min="0" class="form-control input-lg" name="nuevoCedulaId" placeholder="Ingresar cédula" required>
+                <input type="number" min="0" class="form-control input-lg" name="nuevoDocumentoId" placeholder="Ingresar documento" required>
 
               </div>
 
             </div>
 
-
+            <!-- ENTRADA PARA EL EMAIL -->
             
             <div class="form-group">
               
@@ -352,7 +436,7 @@
 
             </div>
 
-
+            <!-- ENTRADA PARA EL TELÉFONO -->
             
             <div class="form-group">
               
@@ -366,6 +450,7 @@
 
             </div>
 
+            <!-- ENTRADA PARA LA DIRECCIÓN -->
             
             <div class="form-group">
               
@@ -379,6 +464,7 @@
 
             </div>
 
+             <!-- ENTRADA PARA LA FECHA DE NACIMIENTO -->
             
             <div class="form-group">
               
@@ -396,7 +482,9 @@
 
         </div>
 
-
+        <!--=====================================
+        PIE DEL MODAL
+        ======================================-->
 
         <div class="modal-footer">
 

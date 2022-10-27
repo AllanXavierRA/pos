@@ -69,6 +69,9 @@
   <script src="view/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
   <script src="view/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 
+  <!-- JQuery Number -->
+  <script src="view/plugins/jqueryNumber/jquerynumber.min.js"></script>
+
 </head>
 
 
@@ -103,6 +106,7 @@
       $_GET["ruta"] == "clientes" ||
       $_GET["ruta"] == "ventas" ||
       $_GET["ruta"] == "crear-venta" ||
+      $_GET["ruta"] == "editar-venta" ||
       $_GET["ruta"] == "reportes" ||
       $_GET["ruta"] == "salir"){
 
@@ -134,6 +138,7 @@
 <script src="view/js/categorias.js"></script>
 <script src="view/js/productos.js"></script>
 <script src="view/js/clientes.js"></script>
+<script src="view/js/ventas.js"></script>
 
 </body>
 </html>
