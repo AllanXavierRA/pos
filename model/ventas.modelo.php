@@ -145,7 +145,7 @@ class ModeloVentas{
 
 			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE fecha like '%$fechaFinal%'");
 
-			$stmt -> bindParam(":fecha", $fechaFinal, PDO::PARAM_STR);
+			// $stmt -> bindParam(":fecha", $fechaFinal, PDO::PARAM_STR);
 
 			$stmt -> execute();
 

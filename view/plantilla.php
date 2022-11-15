@@ -33,6 +33,11 @@
   <link rel="stylesheet" href="view/bower_components/datatables.net-bs/css/responsive.bootstrap.min.css">
   <!-- iCheck for checkboxes and radio inputs -->
   <link rel="stylesheet" href="view/plugins/iCheck/all.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="view/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+
+    <!-- Morris chart -->
+  <link rel="stylesheet" href="view/bower_components/morris.js/morris.css">
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -71,6 +76,16 @@
 
   <!-- JQuery Number -->
   <script src="view/plugins/jqueryNumber/jquerynumber.min.js"></script>
+
+  <!-- daterangepicker http://www.daterangepicker.com/-->
+  <script src="view/bower_components/moment/min/moment.min.js"></script>
+  <script src="view/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+  <!-- Morris.js charts http://morrisjs.github.io/morris.js/-->
+  <script src="view/bower_components/raphael/raphael.min.js"></script>
+  <script src="view/bower_components/morris.js/morris.min.js"></script>
+
+
 
 </head>
 
@@ -139,6 +154,7 @@
 <script src="view/js/productos.js"></script>
 <script src="view/js/clientes.js"></script>
 <script src="view/js/ventas.js"></script>
+<script src="view/js/reportes.js"></script>
 
 </body>
 </html>
